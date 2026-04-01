@@ -10,6 +10,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val textView = findViewById<TextView>(R.id.textView)
         val test = "我能写Kotlin"
-        textView.text = test;
+        textView.text = test
     }
 }
