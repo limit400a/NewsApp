@@ -9,7 +9,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val textView = findViewById<TextView>(R.id.textView)
-        val test = "我能写Kotlin"
+        val test = "我能写Kotlin了"
         textView.text = test
     }
 }
