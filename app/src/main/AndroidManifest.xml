@@ -26,6 +26,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name=".ui.detail.DetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NewsApp">
+
+        </activity>
     </application>
 
 </manifest>

@@ -14,6 +14,8 @@ import com.example.newsapp.repository.NewsRepository
 import com.example.newsapp.ui.NewsAdapter
 import kotlinx.coroutines.launch
 
+private lateinit var swipeRefresh:
+        androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 class MainActivity : AppCompatActivity() {
 
     //创建NewsRepository实例和Adapter实例
@@ -28,10 +30,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyView: TextView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.hide()
 
         //初始化控件
         recyclerView = findViewById(R.id.recyclerView)
@@ -42,7 +44,15 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)  //线性排列
         recyclerView.adapter = newsAdapter  //绑定适配器
 
-        //加载新闻数据
+        //初始化SwipeRefresh
+        swipeRefresh = findViewById(R.id.swipeRefresh)
+
+        //设置下拉刷新
+        swipeRefresh.setOnRefreshListener {
+            //加载新闻数据
+            loadNews()
+        }
+        // 加载新闻数据
         loadNews()
     }
     //加载新闻数据
@@ -66,17 +76,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    //显示加载中
+    //显示加载中，如果是下拉刷新触发的加载，不显示ProgressBar
     private fun showloading(){
-        progressBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.GONE
+        if (!swipeRefresh.isRefreshing){
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        }
         emptyView.visibility  =View.GONE
     }
     //显示列表状态
     private fun showList(newsList: List<com.example.newsapp.data.News>){
         progressBar.visibility = View.GONE
+        swipeRefresh.visibility = View.VISIBLE  // 显示 SwipeRefreshLayout
         recyclerView.visibility = View.VISIBLE
         emptyView.visibility = View.GONE
+
+        swipeRefresh.isRefreshing = false // 隐藏刷新动画
 
         newsAdapter.submitList(newsList)    //更新Adapter数据
     }

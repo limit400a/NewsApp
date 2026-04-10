@@ -13,12 +13,23 @@
         android:layout_gravity="center"
         android:visibility="visible"/>
 
-<!--    新闻列表-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <!-- 下拉刷新容器，SwipeRefreshLayout下拉刷新容器，包裹RecyclerView。用户下拉列表时会触发刷新，重新加载新闻数据 -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:visibility="gone">
+
+        <!--    新闻列表-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
 
 <!--    空数据错误提示-->

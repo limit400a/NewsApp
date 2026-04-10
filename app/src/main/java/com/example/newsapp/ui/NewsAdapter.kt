@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.newsapp.R
 import com.example.newsapp.data.News
 
@@ -35,6 +36,15 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(){
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val news = newsList[position]
         holder.bind(news)
+
+        //添加新闻点击监听
+        holder.itemView.setOnClickListener {
+            val intent = android.content.Intent(holder.itemView.context,com.example.newsapp.ui.detail.DetailActivity::class.java)
+            intent.putExtra("title",news.title)
+            intent.putExtra("url",news.url)
+
+            holder.itemView.context.startActivity(intent)
+        }
     }
     //ViewHolder:缓存每个列表项的视图引用，避免重复findViewById
     inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -46,7 +56,14 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(){
             authorText.text = news.author
 
             //图片暂时用占位背景，后续用Glide加载
-            //imageView.setImageResource(R.drawable.placeholder)
+            news.imageUrl?.let { url ->
+                if (url.isEmpty()){
+                    imageView.load(url){
+                        placeholder(R.drawable.ic_launcher_background)      // 加载中占位图
+                        error(R.drawable.ic_launcher_background)            // 加载失败占位图
+                    }
+                }
+            }
         }
     }
 }
