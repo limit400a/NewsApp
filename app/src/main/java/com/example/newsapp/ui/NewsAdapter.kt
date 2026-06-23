@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.view.menu.MenuView.ItemView
-import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.newsapp.R
@@ -17,6 +15,9 @@ import com.example.newsapp.data.News
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(){
     //新闻数据列表
     private  var newsList : List<News> = emptyList()
+
+    //收藏回调
+    var onCollectClick:((News)->Unit) ?= null
     //更新数据的方法(外部调用)
     fun submitList(list: List<News>){
         newsList = list
@@ -37,13 +38,16 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(){
         val news = newsList[position]
         holder.bind(news)
 
-        //添加新闻点击监听
+        //新闻点击跳转详情
         holder.itemView.setOnClickListener {
             val intent = android.content.Intent(holder.itemView.context,com.example.newsapp.ui.detail.DetailActivity::class.java)
             intent.putExtra("title",news.title)
             intent.putExtra("url",news.url)
-
             holder.itemView.context.startActivity(intent)
+        }
+        //收藏按钮点击
+        holder.itemView.findViewById<ImageView>(R.id.collectBtn).setOnClickListener {
+            onCollectClick?.invoke(news)
         }
     }
     //ViewHolder:缓存每个列表项的视图引用，避免重复findViewById
@@ -51,11 +55,12 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(){
         private val titleText : TextView = itemView.findViewById(R.id.newsTitle)
         private val authorText: TextView = itemView.findViewById(R.id.newsAuthor)
         private val imageView : ImageView = itemView.findViewById(R.id.newsImage)
+        private val collectBtn:ImageView = itemView.findViewById(R.id.collectBtn)
         fun bind(news: News){
             titleText.text = news.title
             authorText.text = news.author
 
-            //图片暂时用占位背景，后续用Glide加载
+            //Coil是Kotlin专用的图片加载库，能异步加载网络图片并显示在ImageView里
             news.imageUrl?.let { url ->
                 if (url.isEmpty()){
                     imageView.load(url){
@@ -64,6 +69,16 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(){
                     }
                 }
             }
+//            //设置收藏图标状态
+//            collectBtn.setImageResource(
+//                if (isCollected) R.drawable.collected   //已收藏
+//                else R.drawable.not_collect             //未收藏
+//            )
+//            collectBtn.setOnClickListener {
+//                onCollectClick(news,!isCollected)
+//            }
+            //默认显示未收藏图标
+            collectBtn.setImageResource(R.drawable.not_collect)
         }
     }
 }
